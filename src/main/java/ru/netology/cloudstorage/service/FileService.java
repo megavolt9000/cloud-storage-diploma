@@ -1,23 +1,17 @@
 package ru.netology.cloudstorage.service;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.multipart.MultipartFile;
-
+import ru.netology.cloudstorage.dto.FileResponse;
 import ru.netology.cloudstorage.entity.FileEntity;
 import ru.netology.cloudstorage.entity.UserEntity;
-
 import ru.netology.cloudstorage.exception.FileNotFoundException;
 import ru.netology.cloudstorage.exception.UnauthorizedException;
-
 import ru.netology.cloudstorage.repository.FileRepository;
 import ru.netology.cloudstorage.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import ru.netology.cloudstorage.dto.FileResponse;
-
 import java.util.List;
 
 @Service
@@ -84,6 +78,7 @@ public class FileService {
 
         fileRepository.save(fileEntity);
     }
+
     public List<FileResponse> getFiles(
 
             String authToken,
@@ -123,6 +118,7 @@ public class FileService {
 
                 .toList();
     }
+
     public void deleteFile(
 
             String authToken,
@@ -161,6 +157,7 @@ public class FileService {
 
         fileRepository.delete(file);
     }
+
     public void renameFile(
 
             String authToken,
@@ -206,6 +203,7 @@ public class FileService {
 
         fileRepository.save(file);
     }
+
     public byte[] downloadFile(
 
             String authToken,
