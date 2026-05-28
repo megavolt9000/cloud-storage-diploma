@@ -1,6 +1,7 @@
 # Cloud Storage
 
 Дипломный проект — облачное файловое хранилище.
+[Дипломное задание](https://github.com/netology-code/jd-homeworks/blob/master/diploma/cloudservice.md)
 
 ---
 
