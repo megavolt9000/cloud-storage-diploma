@@ -34,5 +34,6 @@ build/
 
 storage/
 node_modules/
-.env
+Front/node_modules/
+Front/dist/
 

@@ -1,19 +1,13 @@
 package ru.netology.cloudstorage.service;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.stereotype.Service;
-
 import ru.netology.cloudstorage.dto.LoginRequest;
 import ru.netology.cloudstorage.dto.LoginResponse;
-
 import ru.netology.cloudstorage.entity.UserEntity;
-
 import ru.netology.cloudstorage.exception.BadCredentialsException;
 import ru.netology.cloudstorage.exception.UnauthorizedException;
-
 import ru.netology.cloudstorage.repository.UserRepository;
 
 import java.util.UUID;

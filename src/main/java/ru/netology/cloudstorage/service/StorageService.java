@@ -1,19 +1,14 @@
 package ru.netology.cloudstorage.service;
 
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.nio.file.StandardCopyOption;
-
 import java.util.UUID;
 
 @Service
@@ -55,6 +50,7 @@ public class StorageService {
 
         return destination.toString();
     }
+
     public void delete(
             String path
     ) throws IOException {
@@ -64,6 +60,7 @@ public class StorageService {
 
         Files.deleteIfExists(filePath);
     }
+
     public String rename(
 
             String oldPath,
@@ -91,6 +88,7 @@ public class StorageService {
 
         return newFile.toString();
     }
+
     public byte[] downloadFile(
             String path
     ) throws Exception {
