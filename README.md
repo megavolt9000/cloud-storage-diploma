@@ -143,7 +143,7 @@ https://nodejs.org/ru/download/
 
 2. Скачать проект.
 
-3. Frontend приложение располагается в папке [FRONT](./front).
+3. Frontend приложение располагается в папке [FRONT](front).
 
 4. Все команды выполнять из папки FRONT.
 
