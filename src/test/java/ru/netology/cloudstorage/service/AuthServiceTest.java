@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.netology.cloudstorage.dto.LoginRequest;
-import ru.netology.cloudstorage.dto.LoginResponse;
 import ru.netology.cloudstorage.entity.UserEntity;
 import ru.netology.cloudstorage.exception.BadCredentialsException;
 import ru.netology.cloudstorage.exception.UnauthorizedException;
@@ -59,11 +58,12 @@ class AuthServiceTest {
                 "encodedPassword"
         )).thenReturn(true);
 
-        LoginResponse response = authService.login(request);
+        String token = authService.login(
+                request.getLogin(),
+                request.getPassword()
+        );
 
-        assertNotNull(response);
-
-        assertNotNull(response.getAuthToken());
+        assertNotNull(token);
 
         verify(userRepository, times(1))
                 .save(user);
@@ -82,7 +82,10 @@ class AuthServiceTest {
 
         assertThrows(
                 BadCredentialsException.class,
-                () -> authService.login(request)
+                () -> authService.login(
+                        request.getLogin(),
+                        request.getPassword()
+                )
         );
     }
 
@@ -104,7 +107,10 @@ class AuthServiceTest {
 
         assertThrows(
                 BadCredentialsException.class,
-                () -> authService.login(request)
+                () -> authService.login(
+                        request.getLogin(),
+                        request.getPassword()
+                )
         );
     }
 

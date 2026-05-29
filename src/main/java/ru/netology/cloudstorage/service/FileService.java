@@ -3,7 +3,6 @@ package ru.netology.cloudstorage.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloudstorage.dto.FileResponse;
 import ru.netology.cloudstorage.entity.FileEntity;
 import ru.netology.cloudstorage.entity.UserEntity;
 import ru.netology.cloudstorage.exception.FileNotFoundException;
@@ -79,15 +78,17 @@ public class FileService {
         fileRepository.save(fileEntity);
     }
 
-    public List<FileResponse> getFiles(
+    public List<FileEntity> getFiles(
 
             String authToken,
             Integer limit
 
     ) {
+
         if (authToken.startsWith("Bearer ")) {
             authToken = authToken.substring(7);
         }
+
         UserEntity user = userRepository
 
                 .findByToken(authToken)
@@ -105,17 +106,6 @@ public class FileService {
 
                 .limit(limit == null ? files.size() : limit)
 
-                .map(file ->
-
-                        FileResponse.builder()
-
-                                .filename(file.getFilename())
-
-                                .size(file.getFileSize())
-
-                                .build()
-                )
-
                 .toList();
     }
 
@@ -125,9 +115,11 @@ public class FileService {
             String filename
 
     ) throws Exception {
+
         if (authToken.startsWith("Bearer ")) {
             authToken = authToken.substring(7);
         }
+
         UserEntity user = userRepository
 
                 .findByToken(authToken)
@@ -165,9 +157,11 @@ public class FileService {
             String newFilename
 
     ) throws Exception {
+
         if (authToken.startsWith("Bearer ")) {
             authToken = authToken.substring(7);
         }
+
         UserEntity user = userRepository
 
                 .findByToken(authToken)
@@ -210,9 +204,11 @@ public class FileService {
             String filename
 
     ) throws Exception {
+
         if (authToken.startsWith("Bearer ")) {
             authToken = authToken.substring(7);
         }
+
         UserEntity user = userRepository
 
                 .findByToken(authToken)

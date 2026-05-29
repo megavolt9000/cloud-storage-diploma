@@ -4,7 +4,7 @@ spring:
     name: Cloudstorage
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/cloudstorage
+    url: jdbc:postgresql://localhost:5433/cloudstorage
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

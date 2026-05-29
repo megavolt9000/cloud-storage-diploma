@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloudstorage.dto.FileResponse;
 import ru.netology.cloudstorage.entity.FileEntity;
 import ru.netology.cloudstorage.entity.UserEntity;
 import ru.netology.cloudstorage.exception.FileNotFoundException;
@@ -100,7 +99,7 @@ class FileServiceTest {
         when(fileRepository.findAllByUser(user))
                 .thenReturn(List.of(fileEntity));
 
-        List<FileResponse> result =
+        List<FileEntity> result =
                 fileService.getFiles("token", 10);
 
         assertEquals(1, result.size());

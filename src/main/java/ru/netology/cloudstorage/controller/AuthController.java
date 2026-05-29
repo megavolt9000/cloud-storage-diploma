@@ -22,8 +22,17 @@ public class AuthController {
             LoginRequest request
     ) {
 
+        String token = authService.login(
+                request.getLogin(),
+                request.getPassword()
+        );
+
         LoginResponse response =
-                authService.login(request);
+                LoginResponse.builder()
+
+                        .authToken(token)
+
+                        .build();
 
         return ResponseEntity.ok(response);
     }
