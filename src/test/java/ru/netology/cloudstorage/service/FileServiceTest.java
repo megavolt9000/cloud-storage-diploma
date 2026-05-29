@@ -11,9 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.entity.FileEntity;
 import ru.netology.cloudstorage.entity.UserEntity;
 import ru.netology.cloudstorage.exception.FileNotFoundException;
-import ru.netology.cloudstorage.exception.UnauthorizedException;
 import ru.netology.cloudstorage.repository.FileRepository;
-import ru.netology.cloudstorage.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,9 +22,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FileServiceTest {
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private FileRepository fileRepository;
@@ -69,9 +64,6 @@ class FileServiceTest {
                 "hello".getBytes()
         );
 
-        when(userRepository.findByToken("token"))
-                .thenReturn(Optional.of(user));
-
         when(fileRepository.findByFilenameAndUser(
                 "test.txt",
                 user
@@ -81,7 +73,7 @@ class FileServiceTest {
                 .thenReturn("storage/test.txt");
 
         fileService.uploadFile(
-                "token",
+                user,
                 "test.txt",
                 file
         );
@@ -93,14 +85,11 @@ class FileServiceTest {
     @Test
     void getFilesSuccess() {
 
-        when(userRepository.findByToken("token"))
-                .thenReturn(Optional.of(user));
-
         when(fileRepository.findAllByUser(user))
                 .thenReturn(List.of(fileEntity));
 
         List<FileEntity> result =
-                fileService.getFiles("token", 10);
+                fileService.getFiles(user, 10);
 
         assertEquals(1, result.size());
 
@@ -113,16 +102,13 @@ class FileServiceTest {
     @Test
     void deleteFileSuccess() throws Exception {
 
-        when(userRepository.findByToken("token"))
-                .thenReturn(Optional.of(user));
-
         when(fileRepository.findByFilenameAndUser(
                 "test.txt",
                 user
         )).thenReturn(Optional.of(fileEntity));
 
         fileService.deleteFile(
-                "token",
+                user,
                 "test.txt"
         );
 
@@ -136,9 +122,6 @@ class FileServiceTest {
     @Test
     void renameFileSuccess() throws Exception {
 
-        when(userRepository.findByToken("token"))
-                .thenReturn(Optional.of(user));
-
         when(fileRepository.findByFilenameAndUser(
                 "test.txt",
                 user
@@ -150,7 +133,7 @@ class FileServiceTest {
         )).thenReturn("storage/new.txt");
 
         fileService.renameFile(
-                "token",
+                user,
                 "test.txt",
                 "new.txt"
         );
@@ -167,9 +150,6 @@ class FileServiceTest {
     @Test
     void downloadFileNotFound() {
 
-        when(userRepository.findByToken("token"))
-                .thenReturn(Optional.of(user));
-
         when(fileRepository.findByFilenameAndUser(
                 "missing.txt",
                 user
@@ -178,23 +158,8 @@ class FileServiceTest {
         assertThrows(
                 FileNotFoundException.class,
                 () -> fileService.downloadFile(
-                        "token",
+                        user,
                         "missing.txt"
-                )
-        );
-    }
-
-    @Test
-    void unauthorizedUser() {
-
-        when(userRepository.findByToken("bad-token"))
-                .thenReturn(Optional.empty());
-
-        assertThrows(
-                UnauthorizedException.class,
-                () -> fileService.getFiles(
-                        "bad-token",
-                        10
                 )
         );
     }

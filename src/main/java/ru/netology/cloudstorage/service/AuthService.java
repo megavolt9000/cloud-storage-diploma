@@ -74,4 +74,23 @@ public class AuthService {
 
         userRepository.save(user);
     }
+
+    public UserEntity getUserByToken(
+            String authToken
+    ) {
+
+        if (authToken.startsWith("Bearer ")) {
+            authToken = authToken.substring(7);
+        }
+
+        return userRepository
+                .findByToken(authToken)
+
+                .orElseThrow(() ->
+                        new UnauthorizedException(
+                                "Unauthorized"
+                        )
+                );
+    }
+
 }
