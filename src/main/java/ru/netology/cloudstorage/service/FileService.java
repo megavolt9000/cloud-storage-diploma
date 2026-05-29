@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.entity.FileEntity;
 import ru.netology.cloudstorage.entity.UserEntity;
+import ru.netology.cloudstorage.exception.FileAlreadyExistsException;
 import ru.netology.cloudstorage.exception.FileNotFoundException;
 import ru.netology.cloudstorage.repository.FileRepository;
 
@@ -34,7 +35,7 @@ public class FileService {
 
         if (exists) {
 
-            throw new RuntimeException(
+            throw new FileAlreadyExistsException(
                     "File already exists"
             );
         }
