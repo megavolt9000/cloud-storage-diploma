@@ -87,4 +87,24 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(
+            FileAlreadyExistsException.class
+    )
+
+    public ResponseEntity<ErrorResponse>
+    handleFileAlreadyExists(
+            FileAlreadyExistsException e
+    ) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+
+                .body(
+                        ErrorResponse.builder()
+                                .message(e.getMessage())
+                                .id(400)
+                                .build()
+                );
+    }
 }

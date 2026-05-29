@@ -12,7 +12,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.netology.cloudstorage.dto.LoginRequest;
-import ru.netology.cloudstorage.dto.LoginResponse;
 import ru.netology.cloudstorage.entity.UserEntity;
 import ru.netology.cloudstorage.repository.UserRepository;
 import ru.netology.cloudstorage.service.AuthService;
@@ -83,11 +82,12 @@ class AuthIntegrationTest {
                         .password("admin")
                         .build();
 
-        LoginResponse response =
-                authService.login(request);
+        String token =
+                authService.login(
+                        request.getLogin(),
+                        request.getPassword()
+                );
 
-        assertNotNull(response);
-
-        assertNotNull(response.getAuthToken());
+        assertNotNull(token);
     }
 }

@@ -3,13 +3,11 @@ package ru.netology.cloudstorage.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloudstorage.dto.FileResponse;
 import ru.netology.cloudstorage.entity.FileEntity;
 import ru.netology.cloudstorage.entity.UserEntity;
+import ru.netology.cloudstorage.exception.FileAlreadyExistsException;
 import ru.netology.cloudstorage.exception.FileNotFoundException;
-import ru.netology.cloudstorage.exception.UnauthorizedException;
 import ru.netology.cloudstorage.repository.FileRepository;
-import ru.netology.cloudstorage.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,33 +17,17 @@ import java.util.List;
 
 public class FileService {
 
-    private final UserRepository userRepository;
-
     private final FileRepository fileRepository;
 
     private final StorageService storageService;
 
     public void uploadFile(
 
-            String authToken,
+            UserEntity user,
             String filename,
             MultipartFile file
 
     ) throws Exception {
-
-        if (authToken.startsWith("Bearer ")) {
-            authToken = authToken.substring(7);
-        }
-
-        UserEntity user = userRepository
-
-                .findByToken(authToken)
-
-                .orElseThrow(() ->
-                        new UnauthorizedException(
-                                "Unauthorized"
-                        )
-                );
 
         boolean exists = fileRepository
                 .findByFilenameAndUser(filename, user)
@@ -53,7 +35,7 @@ public class FileService {
 
         if (exists) {
 
-            throw new RuntimeException(
+            throw new FileAlreadyExistsException(
                     "File already exists"
             );
         }
@@ -79,24 +61,12 @@ public class FileService {
         fileRepository.save(fileEntity);
     }
 
-    public List<FileResponse> getFiles(
+    public List<FileEntity> getFiles(
 
-            String authToken,
+            UserEntity user,
             Integer limit
 
     ) {
-        if (authToken.startsWith("Bearer ")) {
-            authToken = authToken.substring(7);
-        }
-        UserEntity user = userRepository
-
-                .findByToken(authToken)
-
-                .orElseThrow(() ->
-                        new UnauthorizedException(
-                                "Unauthorized"
-                        )
-                );
 
         List<FileEntity> files =
                 fileRepository.findAllByUser(user);
@@ -105,38 +75,15 @@ public class FileService {
 
                 .limit(limit == null ? files.size() : limit)
 
-                .map(file ->
-
-                        FileResponse.builder()
-
-                                .filename(file.getFilename())
-
-                                .size(file.getFileSize())
-
-                                .build()
-                )
-
                 .toList();
     }
 
     public void deleteFile(
 
-            String authToken,
+            UserEntity user,
             String filename
 
     ) throws Exception {
-        if (authToken.startsWith("Bearer ")) {
-            authToken = authToken.substring(7);
-        }
-        UserEntity user = userRepository
-
-                .findByToken(authToken)
-
-                .orElseThrow(() ->
-                        new UnauthorizedException(
-                                "Unauthorized"
-                        )
-                );
 
         FileEntity file = fileRepository
 
@@ -146,7 +93,7 @@ public class FileService {
                 )
 
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new FileNotFoundException(
                                 "File not found"
                         )
                 );
@@ -160,23 +107,11 @@ public class FileService {
 
     public void renameFile(
 
-            String authToken,
+            UserEntity user,
             String oldFilename,
             String newFilename
 
     ) throws Exception {
-        if (authToken.startsWith("Bearer ")) {
-            authToken = authToken.substring(7);
-        }
-        UserEntity user = userRepository
-
-                .findByToken(authToken)
-
-                .orElseThrow(() ->
-                        new UnauthorizedException(
-                                "Unauthorized"
-                        )
-                );
 
         FileEntity file = fileRepository
 
@@ -186,7 +121,7 @@ public class FileService {
                 )
 
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new FileNotFoundException(
                                 "File not found"
                         )
                 );
@@ -206,22 +141,10 @@ public class FileService {
 
     public byte[] downloadFile(
 
-            String authToken,
+            UserEntity user,
             String filename
 
     ) throws Exception {
-        if (authToken.startsWith("Bearer ")) {
-            authToken = authToken.substring(7);
-        }
-        UserEntity user = userRepository
-
-                .findByToken(authToken)
-
-                .orElseThrow(() ->
-                        new UnauthorizedException(
-                                "Unauthorized"
-                        )
-                );
 
         FileEntity fileEntity = fileRepository
 

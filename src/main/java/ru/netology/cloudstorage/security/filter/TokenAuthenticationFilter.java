@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -18,6 +19,7 @@ import ru.netology.cloudstorage.repository.UserRepository;
 import java.io.IOException;
 import java.util.Collections;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter
@@ -34,8 +36,9 @@ public class TokenAuthenticationFilter
 
     ) throws ServletException, IOException {
 
-        System.out.println(
-                "REQUEST = " + request.getRequestURI()
+        log.info(
+                "REQUEST = {}",
+                request.getRequestURI()
         );
 
         String token =
@@ -69,8 +72,9 @@ public class TokenAuthenticationFilter
             token = token.substring(7);
         }
 
-        System.out.println(
-                "TOKEN = " + token
+        log.info(
+                "TOKEN = {}",
+                token
         );
 
         if (token != null
@@ -82,9 +86,9 @@ public class TokenAuthenticationFilter
 
             if (userEntity != null) {
 
-                System.out.println(
-                        "USER = "
-                                + userEntity.getLogin()
+                log.info(
+                        "USER = {}",
+                        userEntity.getLogin()
                 );
 
                 User user =
@@ -111,11 +115,11 @@ public class TokenAuthenticationFilter
                         .getContext()
                         .setAuthentication(authentication);
 
-                System.out.println("AUTH OK");
+                log.info("AUTH OK");
 
             } else {
 
-                System.out.println(
+                log.warn(
                         "USER NOT FOUND BY TOKEN"
                 );
             }

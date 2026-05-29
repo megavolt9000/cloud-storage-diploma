@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.dto.FileResponse;
 import ru.netology.cloudstorage.dto.RenameFileRequest;
+import ru.netology.cloudstorage.entity.FileEntity;
+import ru.netology.cloudstorage.entity.UserEntity;
+import ru.netology.cloudstorage.service.AuthService;
 import ru.netology.cloudstorage.service.FileService;
 
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.List;
 public class FileController {
 
     private final FileService fileService;
+
+    private final AuthService authService;
 
     @PostMapping("/file")
     public ResponseEntity<Void> uploadFile(
@@ -34,8 +39,11 @@ public class FileController {
 
     ) throws Exception {
 
+        UserEntity user =
+                authService.getUserByToken(authToken);
+
         fileService.uploadFile(
-                authToken,
+                user,
                 filename,
                 file
         );
@@ -54,13 +62,31 @@ public class FileController {
 
     ) {
 
-        return ResponseEntity.ok(
+        UserEntity user =
+                authService.getUserByToken(authToken);
 
+        List<FileEntity> files =
                 fileService.getFiles(
-                        authToken,
+                        user,
                         limit
+                );
+
+        List<FileResponse> response = files.stream()
+
+                .map(file ->
+
+                        FileResponse.builder()
+
+                                .filename(file.getFilename())
+
+                                .size(file.getFileSize())
+
+                                .build()
                 )
-        );
+
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/file")
@@ -74,8 +100,11 @@ public class FileController {
 
     ) throws Exception {
 
+        UserEntity user =
+                authService.getUserByToken(authToken);
+
         fileService.deleteFile(
-                authToken,
+                user,
                 filename
         );
 
@@ -99,12 +128,12 @@ public class FileController {
 
     ) throws Exception {
 
-        System.out.println("OLD = " + filename);
-        System.out.println("NEW = " + request.getFilename());
+        UserEntity user =
+                authService.getUserByToken(authToken);
 
         fileService.renameFile(
 
-                authToken,
+                user,
                 filename,
                 request.getFilename()
         );
@@ -123,8 +152,11 @@ public class FileController {
 
     ) throws Exception {
 
+        UserEntity user =
+                authService.getUserByToken(authToken);
+
         byte[] file = fileService.downloadFile(
-                authToken,
+                user,
                 filename
         );
 

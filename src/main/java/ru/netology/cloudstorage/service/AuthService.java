@@ -3,8 +3,6 @@ package ru.netology.cloudstorage.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.netology.cloudstorage.dto.LoginRequest;
-import ru.netology.cloudstorage.dto.LoginResponse;
 import ru.netology.cloudstorage.entity.UserEntity;
 import ru.netology.cloudstorage.exception.BadCredentialsException;
 import ru.netology.cloudstorage.exception.UnauthorizedException;
@@ -21,12 +19,13 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public LoginResponse login(
-            LoginRequest request
+    public String login(
+            String login,
+            String password
     ) {
 
         UserEntity user = userRepository
-                .findByLogin(request.getLogin())
+                .findByLogin(login)
 
                 .orElseThrow(() ->
                         new BadCredentialsException(
@@ -35,7 +34,7 @@ public class AuthService {
                 );
 
         boolean matches = passwordEncoder.matches(
-                request.getPassword(),
+                password,
                 user.getPassword()
         );
 
@@ -52,9 +51,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return LoginResponse.builder()
-                .authToken(token)
-                .build();
+        return token;
     }
 
     public void logout(
@@ -63,6 +60,7 @@ public class AuthService {
         if (authToken.startsWith("Bearer ")) {
             authToken = authToken.substring(7);
         }
+
         UserEntity user = userRepository
                 .findByToken(authToken)
 
@@ -76,4 +74,23 @@ public class AuthService {
 
         userRepository.save(user);
     }
+
+    public UserEntity getUserByToken(
+            String authToken
+    ) {
+
+        if (authToken.startsWith("Bearer ")) {
+            authToken = authToken.substring(7);
+        }
+
+        return userRepository
+                .findByToken(authToken)
+
+                .orElseThrow(() ->
+                        new UnauthorizedException(
+                                "Unauthorized"
+                        )
+                );
+    }
+
 }
