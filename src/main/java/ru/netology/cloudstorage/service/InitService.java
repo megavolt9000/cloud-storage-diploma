@@ -2,6 +2,7 @@ package ru.netology.cloudstorage.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.netology.cloudstorage.entity.UserEntity;
@@ -9,6 +10,7 @@ import ru.netology.cloudstorage.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 
 public class InitService {
 
@@ -39,8 +41,6 @@ public class InitService {
 
         userRepository.save(admin);
 
-        System.out.println(
-                "Admin user created"
-        );
+        log.info("Admin user created");
     }
 }
